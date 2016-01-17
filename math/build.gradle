@@ -1,0 +1,66 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.4' // 依赖bintray插件(用于告诉它我们的库信息)
+    }
+}
+
+apply plugin: 'com.jfrog.bintray' // 使用bintray组件
+apply plugin: 'com.android.library'
+apply plugin: 'maven' // 声明maven库的信息
+apply plugin: 'maven-publish' // 真正的上传插件
+
+bintray {
+    user = 'itrufeng' // 用户名
+    key = '******' // API Key(Your Profile->Edit->API Key->Show)
+    publications = ['Jcenter']
+    pkg {
+        repo = 'maven' // 之前注册选择的maven类型的库
+        name = 'Math' // 咱们创建的库
+        userOrg = 'itrufeng' // 用户名
+        licenses = ['MIT'] // 你随意
+        vcsUrl = 'https://github.com/itrufeng/Math' // 你代码所在地
+        version {
+            name = '1.0' // 版本号
+            desc = 'I do not care.' // 描述
+            released  = new Date() // 发布日期
+        }
+    }
+}
+
+publishing {
+    publications {
+        Jcenter(MavenPublication) {
+            groupId 'com.thoughtworks.jizhang'
+            artifactId 'math'
+            version '1.0'
+            artifact("$buildDir/outputs/aar/math-debug.aar")
+        }
+    }
+}
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.1.1'
+}
